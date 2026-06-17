@@ -1,0 +1,66 @@
+# urisys automation lab — one stack: RDP/KVM (:8795) + web UI/STT/chat/WebRTC (:8099)
+
+services:
+  urirdp:
+    build:
+      context: ..
+      dockerfile: urirdp-docker/Dockerfile
+    container_name: urisys-lab-urirdp
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      RDP_USER: ${RDP_USER:-urisys}
+      RDP_PASSWORD: ${RDP_PASSWORD:-urisys}
+      URISYS_RDP_PORT: ${URISYS_RDP_PORT:-8795}
+      URISYS_KVM_DISPLAY: ${URISYS_KVM_DISPLAY:-:10}
+      URISYS_RDP_DISPLAY: ${URISYS_RDP_DISPLAY:-:10}
+      URISYS_CONFIG: ${URISYS_CONFIG:-/opt/urirdp/config/rdp-kvm-profile.real.json}
+      URISYS_ALLOW_REAL: ${URISYS_ALLOW_REAL:-1}
+      URISYS_ENV_POLICY: ${URISYS_ENV_POLICY:-/opt/urirdp/config/env-policy.yaml}
+    ports:
+      - "${RDP_PORT:-3389}:3389"
+      - "${URISYS_RDP_PORT:-8795}:8795"
+    volumes:
+      - ../urirdp-docker/data:/opt/urirdp/data
+      - ../urirdp-docker/config:/opt/urirdp/config:ro
+    networks:
+      - urisys-lab
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8795/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  automation-lab:
+    build:
+      context: ../..
+      dockerfile: urisys-automation-lab/Dockerfile
+    container_name: urisys-lab-ui
+    restart: unless-stopped
+    depends_on:
+      urirdp:
+        condition: service_healthy
+    environment:
+      URISYS_RDP_URL: http://urirdp:8795
+      URISYS_LAB_HOST: 0.0.0.0
+      URISYS_LAB_PORT: ${URISYS_LAB_PORT:-8099}
+      URISYS_LAB_PACKS: stt,chat,webrtc
+      URISYS_LAB_FORWARD_SCHEMES: rdp,kvm,him,ocr,llm,browser,shell,http,https,env
+    ports:
+      - "${URISYS_LAB_PORT:-8099}:8099"
+    volumes:
+      - ./data:/opt/lab/data
+    networks:
+      - urisys-lab
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8099/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+networks:
+  urisys-lab:
+    name: urisys-lab

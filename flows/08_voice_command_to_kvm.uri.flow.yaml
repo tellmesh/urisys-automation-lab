@@ -1,0 +1,40 @@
+flow:
+  id: 08-voice-command-to-kvm
+  description: STT transcript → llm plan → kvm execute (standardized pipeline).
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - id: stt_start
+    uri: stt://local/session/main/command/start
+    payload:
+      language: pl-PL
+      mode: browser
+
+  - id: stt_transcript
+    uri: stt://local/session/main/query/transcript
+    after: stt_start
+
+  - id: map_voice
+    uri: llm://local/text/query/plan
+    after: stt_transcript
+    payload:
+      transcript_from: stt_transcript
+      allowed_schemes:
+        - kvm
+        - browser
+        - rdp
+
+  - id: execute_mapped
+    uri: kvm://local/task/command/click-text
+    after: map_voice
+    if: map_voice.ok == true
+    payload:
+      payload_from: map_voice
+
+# Effect-level contract asserted by scripts/run_test_sessions.py (uri2flow ignores it).
+# The mapped voice command must visibly act on the desktop.
+expect:
+  screen_changed: true

@@ -1,0 +1,29 @@
+flow:
+  id: 09-webrtc-video-chat-rdp
+  description: WebRTC session + data channel envelope, then direct kvm screenshot.
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - id: webrtc_start
+    uri: webrtc://local/session/rdp-chat/command/start
+    payload:
+      room: rdp-lab
+
+  - id: webrtc_send
+    uri: webrtc://local/session/rdp-chat/data/command/send
+    after: webrtc_start
+    payload:
+      envelope:
+        uri: rdp://local/display/query/status
+        payload: {}
+
+  - id: capture_desktop
+    uri: kvm://local/monitor/primary/query/screenshot
+    after: webrtc_send
+    payload: {}
+
+# WebRTC is a transport/protocol flow — no guaranteed desktop visual change.
+# Pass/fail is steps_ok + envelope round-trip (see responses webrtc_send).

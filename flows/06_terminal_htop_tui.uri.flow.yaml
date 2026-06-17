@@ -1,0 +1,23 @@
+flow:
+  id: 06-terminal-htop-tui
+  description: Launch htop in terminal (TUI monitoring).
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - shell://which:
+      args: ["htop"]
+  - him://local/keyboard/command/hotkey:
+      keys: ["ctrl", "alt", "t"]
+  - him://local/keyboard/command/type-text:
+      text: htop
+  - him://local/keyboard/command/key:
+      key: Return
+  - kvm://local/monitor/primary/query/screenshot
+
+# Effect-level contract asserted by scripts/run_test_sessions.py (uri2flow ignores it).
+# Opening a terminal and launching htop must visibly change the desktop.
+expect:
+  screen_changed: true

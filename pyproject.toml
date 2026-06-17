@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "urisys-automation-lab"
+version = "0.1.0"
+description = "urisys automation lab MVP packs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = ["urisysedge>=0.1.0"]
+
+[tool.uv.sources]
+urisysedge = { path = "../urisysedge", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["labedge*", "urimessage*", "urichat*", "uristt*", "uriwebrtc*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

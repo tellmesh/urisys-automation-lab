@@ -1,0 +1,42 @@
+flow:
+  id: 10-full-maintenance-rdp
+  description: Full maintenance — update, browser check, screenshot, report.
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - id: env_check
+    uri: env://runtime/query/health
+    operation: query
+    kind: query
+
+  - id: apt_update
+    uri: shell://sudo
+    payload:
+      args: ["apt-get", "update"]
+    after: env_check
+
+  - id: open_browser
+    uri: browser://chrome/page/open
+    payload:
+      url: http://automation-lab:8099/health
+    after: apt_update
+
+  - id: screenshot
+    uri: kvm://local/monitor/primary/query/screenshot
+    after: open_browser
+
+  - id: ocr_report
+    uri: ocr://local/image/latest/query/text
+    after: screenshot
+
+  - id: rdp_status
+    uri: rdp://local/display/query/status
+    after: ocr_report
+
+# Effect-level contract asserted by scripts/run_test_sessions.py (uri2flow ignores it).
+# Maintenance opens a browser + captures the desktop, which must differ from baseline.
+expect:
+  screen_changed: true

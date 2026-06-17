@@ -1,0 +1,22 @@
+flow:
+  id: 04-browser-download-file
+  description: Open the lab UI page in browser and capture page state.
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - rdp://local/session/command/dismiss-target: {}
+  - browser://chrome/page/open:
+      url: https://example.com/
+  - browser://chrome/page/active/dom
+  - browser://chrome/page/active/screenshot
+
+# Effect-level contract asserted by scripts/run_test_sessions.py (uri2flow ignores it).
+# Reachable, internal page that renders distinct HTML from flow 03's /health JSON,
+# so the capture must differ both from the baseline and from the previous flow.
+expect:
+  screen_changed: true
+  screen_changed_since_previous: true
+  opened_url_contains: example.com

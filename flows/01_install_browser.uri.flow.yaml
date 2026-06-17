@@ -1,0 +1,13 @@
+flow:
+  id: 01-install-browser
+  description: Install Chromium via apt (TUI) and verify binary.
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - shell://sudo:
+      args: ["apt-get", "install", "-y", "chromium"]
+  - shell://which:
+      args: ["chromium"]

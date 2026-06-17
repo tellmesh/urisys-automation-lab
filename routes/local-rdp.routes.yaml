@@ -1,0 +1,32 @@
+# urisys-automation-lab routes (reference for urirdp-docker extension)
+
+forward:
+  urirdp_base_url: http://127.0.0.1:8795
+
+local_schemes:
+  - stt
+  - chat
+  - message
+  - webrtc
+  - log
+
+urisys_schemes:
+  - rdp
+  - kvm
+  - him
+  - ocr
+  - llm
+
+lab_server:
+  host: 127.0.0.1
+  port: 8099
+  uri_call: /uri/call
+
+examples:
+  - kvm://local/task/command/click-text
+  - rdp://local/display/query/status
+  - him://local/keyboard/command/type-text
+  - stt://local/session/main/query/transcript
+  - chat://local/uri/command/execute
+  - message://local/alert/command/send
+  - webrtc://local/session/rdp-chat/data/command/send

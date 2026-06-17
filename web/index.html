@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>urisys automation lab</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #111; background: #f6f7fb; }
+    body { max-width: 960px; margin: 0 auto; padding: 1rem; }
+    header { margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    section { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; }
+    video { width: 100%; background: #000; border-radius: 6px; min-height: 160px; }
+    textarea, input, button { width: 100%; box-sizing: border-box; margin: 0.25rem 0; }
+    button { cursor: pointer; padding: 0.5rem; }
+    pre { background: #111; color: #eee; padding: 0.75rem; overflow: auto; max-height: 240px; font-size: 12px; }
+    .row { display: flex; gap: 0.5rem; }
+    .row button { flex: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>urisys automation lab</h1>
+    <p>STT + chat + WebRTC UI → <code>/uri/call</code> → urirdp-docker (<code>:8795</code>)</p>
+  </header>
+
+  <div class="grid">
+    <section>
+      <h2>Media</h2>
+      <video id="localVideo" autoplay playsinline muted></video>
+      <video id="remoteVideo" autoplay playsinline></video>
+      <div class="row">
+        <button id="btnMedia">Start camera/mic</button>
+        <button id="btnWebRTC">Start WebRTC loopback</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Voice (browser STT)</h2>
+      <button id="btnListen">Listen (Web Speech API)</button>
+      <textarea id="transcript" rows="4" placeholder="Transcript…"></textarea>
+      <button id="btnSttBackend">Send audio text → stt:// backend</button>
+    </section>
+
+    <section>
+      <h2>URI command</h2>
+      <input id="uri" value="kvm://local/task/command/click-text" />
+      <textarea id="payload" rows="3">{ "text": "OK" }</textarea>
+      <label><input type="checkbox" id="dryRun" checked /> dry_run</label>
+      <label><input type="checkbox" id="approved" checked /> approved</label>
+      <div class="row">
+        <button id="btnCall">POST /uri/call</button>
+        <button id="btnChatExecute">chat:// execute transcript</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>WebRTC DataChannel envelope</h2>
+      <button id="btnSendEnvelope">Send URI envelope on DataChannel</button>
+      <pre id="log">Ready.</pre>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+flow:
+  id: 02-update-system-tui
+  description: System update through terminal/TUI (apt).
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - shell://sudo:
+      args: ["apt-get", "update"]
+  - shell://sudo:
+      args: ["apt-get", "upgrade", "-y"]
+  - shell://uname:
+      args: ["-a"]

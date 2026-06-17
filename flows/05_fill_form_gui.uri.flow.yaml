@@ -1,0 +1,27 @@
+flow:
+  id: 05-fill-form-gui
+  description: Fill a form through OCR + KVM + HIM on RDP desktop.
+
+defaults:
+  approved: true
+  dry_run: false
+
+do:
+  - rdp://local/session/command/prepare-target:
+      kind: form
+  - rdp://local/session/query/status
+  - kvm://local/monitor/primary/query/screenshot
+  - ocr://local/image/latest/query/text
+  - llm://local/vision/query/analyze:
+      target_text: Name
+  - him://local/keyboard/command/type-text:
+      text: "TellMesh Demo"
+  - kvm://local/task/command/click-text:
+      text: Submit
+
+# Effect-level contract asserted by scripts/run_test_sessions.py (uri2flow ignores it).
+# A real form-fill must actually locate the targets, not blind-click a fallback.
+expect:
+  # zenity --ok-label=Submit is often below the OCR crop; field labels are reliable
+  ocr_contains: ["Name", "TellMesh"]
+  min_vision_confidence: 0.3
