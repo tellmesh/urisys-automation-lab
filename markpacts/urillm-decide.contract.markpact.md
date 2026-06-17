@@ -67,6 +67,6 @@ Not a URI forwarder — use `rdp://` / `kvm://` / `hypervisor://` for actions.
 | Runtime | Handler |
 |---------|---------|
 | uri3 workflow (host) | `uri3.graph.adapters.llm_adapter` |
-| urirdp / lab forward | `urirdp_llm.handlers.decide` |
+| urirdp / lab forward | `urillm.handlers.text_decide` |
 
 LLM API keys remain on host / urirdp profile (`.env`, `litellm` driver).

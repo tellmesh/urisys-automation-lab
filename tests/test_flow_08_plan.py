@@ -6,24 +6,20 @@ import sys
 from pathlib import Path
 
 LAB = Path(__file__).resolve().parents[1]
-URISYS_PY = LAB.parent / "packages" / "python"
-sys.path.insert(0, str(URISYS_PY))
-sys.path.insert(0, str(LAB / "packages" / "python"))
 sys.path.insert(0, str(LAB / "server"))
-sys.path.insert(0, str(LAB.parent / "urirdp-docker" / "packages" / "python"))
 
-from urirdpedge.runtime import Runtime  # type: ignore
+from urisysedge.runtime import Runtime
 
-import uristt.routes as stt_routes
-import urimessage.routes as message_routes
-import urirdp_llm.routes as llm_routes
+import urillm
+import urimessage
+import uristt
 
 
 def _rt() -> Runtime:
     rt = Runtime(config={"chat": {"urisys_base_url": "http://127.0.0.1:8795"}})
-    stt_routes.register(rt)
-    message_routes.register(rt)
-    llm_routes.register(rt)
+    uristt.register(rt)
+    urimessage.register(rt)
+    urillm.register(rt)
     return rt
 
 

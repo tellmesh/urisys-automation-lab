@@ -16,7 +16,12 @@ RUN apt-get update \
 WORKDIR /opt/lab
 
 # Build context: tellmesh workspace root
+COPY uricore /opt/lab/vendor/uricore
 COPY urisysedge /opt/lab/vendor/urisysedge
+COPY uristt /opt/lab/vendor/uristt
+COPY uriwebrtc /opt/lab/vendor/uriwebrtc
+COPY urimessage /opt/lab/vendor/urimessage
+COPY urichat /opt/lab/vendor/urichat
 COPY urisys-automation-lab /opt/lab/vendor/urisys-automation-lab
 COPY urisys-automation-lab/server ./server
 COPY urisys-automation-lab/web ./web
@@ -29,7 +34,12 @@ COPY uri2flow /tmp/uri2flow
 RUN chmod +x /usr/local/bin/lab-entrypoint \
     && mkdir -p /opt/lab/data \
     && pip install --no-cache-dir \
+       -e /opt/lab/vendor/uricore \
        -e /opt/lab/vendor/urisysedge \
+       -e /opt/lab/vendor/uristt \
+       -e /opt/lab/vendor/uriwebrtc \
+       -e /opt/lab/vendor/urimessage \
+       -e /opt/lab/vendor/urichat \
        -e /opt/lab/vendor/urisys-automation-lab \
        /tmp/uri2ops /tmp/uri3 /tmp/uri2flow \
     && rm -rf /tmp/uri2ops /tmp/uri3 /tmp/uri2flow

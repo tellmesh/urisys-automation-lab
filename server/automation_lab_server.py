@@ -11,72 +11,58 @@ from pathlib import Path
 from typing import Any
 
 LAB_ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = LAB_ROOT / "packages" / "python"
-if str(PACKAGES) not in sys.path:
-    sys.path.insert(0, str(PACKAGES))
-
-URIRDP_PACKAGES = LAB_ROOT.parent / "urirdp-docker" / "packages" / "python"
-if URIRDP_PACKAGES.is_dir() and str(URIRDP_PACKAGES) not in sys.path:
-    sys.path.insert(0, str(URIRDP_PACKAGES))
+TELLMESH = LAB_ROOT.parent
 
 try:
     from labedge.runtime import Runtime, load_json
 except ImportError:
-    from urirdpedge.runtime import Runtime, load_json  # type: ignore
+    from urisysedge.runtime import Runtime, load_json  # type: ignore
 
 
 def build_lab_runtime(config_path: str | None = None) -> Runtime:
     config_file = config_path or os.environ.get(
         "URISYS_CONFIG",
-        str(LAB_ROOT.parent / "urirdp-docker" / "config" / "rdp-kvm-profile.json"),
+        str(TELLMESH / "urirdp-docker" / "config" / "rdp-kvm-profile.json"),
     )
     config = load_json(config_file) if Path(config_file).exists() else {}
     config.setdefault("chat", {})
     config["chat"]["urisys_base_url"] = os.environ.get("URISYS_RDP_URL", "http://127.0.0.1:8795")
 
-    rt = Runtime(events_path=str(LAB_ROOT / "data" / "events.jsonl"), config=config)
-
     packs = os.environ.get("URISYS_LAB_PACKS", "rdp,kvm,him,ocr,llm,stt,chat,message,webrtc").split(",")
     packs = [p.strip() for p in packs if p.strip()]
-    urirdp_available = URIRDP_PACKAGES.is_dir()
-    if not urirdp_available:
-        packs = [p for p in packs if p in {"stt", "chat", "message", "webrtc"}]
-    if "rdp" in packs:
-        import urirdp
 
-        urirdp.register(rt)
-    if "him" in packs:
-        import urirdp_him
+    rdp_pack_names = {"rdp", "kvm", "him", "ocr", "llm", "shell", "env", "browser"}
+    rdp_selected = [p for p in packs if p in rdp_pack_names]
 
-        urirdp_him.register(rt)
-    if "ocr" in packs:
-        import urirdp_ocr
+    if rdp_selected:
+        from urirdpedge.runtime import build_runtime
 
-        urirdp_ocr.register(rt)
-    if "llm" in packs:
-        import urirdp_llm
+        class _Args:
+            packs = ",".join(rdp_selected)
+            config = config_file
+            events = str(LAB_ROOT / "data" / "events.jsonl")
 
-        urirdp_llm.register(rt)
-    if "kvm" in packs:
-        import urirdp_kvm
+        rt = build_runtime(_Args())
+        rt.config.update(config)
+    else:
+        rt = Runtime(events_path=str(LAB_ROOT / "data" / "events.jsonl"), config=config)
 
-        urirdp_kvm.register(rt)
     if "stt" in packs:
-        import uristt.routes as stt_routes
+        import uristt
 
-        stt_routes.register(rt)
+        uristt.register(rt)
     if "chat" in packs:
-        import urichat.routes as chat_routes
+        import urichat
 
-        chat_routes.register(rt)
+        urichat.register(rt)
     if "message" in packs:
-        import urimessage.routes as message_routes
+        import urimessage
 
-        message_routes.register(rt)
+        urimessage.register(rt)
     if "webrtc" in packs:
-        import uriwebrtc.routes as webrtc_routes
+        import uriwebrtc
 
-        webrtc_routes.register(rt)
+        uriwebrtc.register(rt)
     return rt
 
 

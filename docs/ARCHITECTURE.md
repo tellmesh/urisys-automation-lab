@@ -5,9 +5,9 @@ uri2flow YAML (flows/)
   ↓
 urisys-automation-lab server :8099
   ↓
-  stt:// / chat:// / webrtc://  (local mock packs)
-  rdp:// / kvm:// / him:// / ocr:// / llm://  (urirdp-docker runtime)
-  browser:// / shell://  (forward → :8795 or uri2run)
+  stt:// / webrtc:// / message://  (standalone packs: uristt, uriwebrtc, urimessage)
+  rdp:// / kvm:// / him:// / ocr:// / llm://  (urirdpedge → urirdp-docker :8795)
+  browser:// / shell:// / env://  (forward → :8795 or local when packs loaded)
 ```
 
 ## Transport
@@ -26,8 +26,8 @@ docker compose -f docker-compose.lab.yml up --build -d
 
 Services:
 
-- `urirdp` — RDP + KVM/HIM/OCR/LLM
-- `automation-lab` — web UI + `stt://` / `chat://` / `webrtc://`, forward execution to `urirdp`
+- `urirdp` — RDP + KVM/HIM/OCR/LLM (`urirdpedge` / `urisys-rdp`)
+- `automation-lab` — web UI + `stt://` / `webrtc://` / `message://`, forward execution to `urirdp`
 
 ## Principle
 

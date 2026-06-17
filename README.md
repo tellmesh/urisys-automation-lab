@@ -35,9 +35,10 @@ bash scripts/run-lab.sh
 ```txt
 flows/*.uri.flow.yaml     → uri2flow
 server/                   → lab gateway :8099
-packages/python/          → uristt, urichat, uriwebrtc (mock MVP)
+../uristt, ../uriwebrtc, ../urimessage, ../urichat  → standalone voice packs
+../urirdpedge/            → RDP/KVM stack CLI (optional `[rdp]` extra / dev)
 web/                      → getUserMedia + Web Speech + WebRTC DataChannel
-urirdp-docker :8795       → rdp/kvm/him/ocr/llm execution
+urirdp-docker :8795       → rdp/kvm/him/ocr/llm execution (Docker)
 ```
 
 ## Flow 08 (voice → KVM)

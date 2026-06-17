@@ -1,27 +1,14 @@
-import json
-import os
-import sys
-import urllib.request
-from pathlib import Path
-
-LAB = Path(__file__).resolve().parents[1]
-URISYS_PY = LAB.parent / "packages" / "python"
-sys.path.insert(0, str(URISYS_PY))
-sys.path.insert(0, str(LAB / "packages" / "python"))
-sys.path.insert(0, str(LAB.parent / "urirdp-docker" / "packages" / "python"))
-
-from urirdpedge.runtime import Runtime  # type: ignore
-
-import uristt.routes as stt_routes
-import urichat.routes as chat_routes
-import uriwebrtc.routes as webrtc_routes
+import urichat
+import uristt
+import uriwebrtc
+from urisysedge.runtime import Runtime
 
 
 def _rt() -> Runtime:
     rt = Runtime(config={"chat": {"urisys_base_url": "http://127.0.0.1:8795"}})
-    stt_routes.register(rt)
-    chat_routes.register(rt)
-    webrtc_routes.register(rt)
+    uristt.register(rt)
+    urichat.register(rt)
+    uriwebrtc.register(rt)
     return rt
 
 
@@ -61,3 +48,16 @@ def test_webrtc_data_send():
     )
     assert sent["ok"]
     assert sent["result"]["envelope"]["uri"].startswith("rdp://")
+
+
+def test_webrtc_signal_relay():
+    rt = _rt()
+    posted = rt.call(
+        "webrtc://local/session/room-a/signal/command/post",
+        {"room": "room-a", "from": "http://a", "type": "offer", "data": {"type": "offer", "sdp": "v=0"}},
+        {"approved": True},
+    )
+    assert posted["ok"]
+    inbox = rt.call("webrtc://local/session/room-a/signal/query/inbox", {"room": "room-a", "since": 0}, {})
+    assert inbox["ok"]
+    assert len(inbox["result"]["signals"]) == 1

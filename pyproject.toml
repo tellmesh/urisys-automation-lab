@@ -4,19 +4,37 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "urisys-automation-lab"
-version = "0.1.0"
-description = "urisys automation lab MVP packs"
+version = "0.1.3"
+description = "urisys automation lab — server, flows, voice/WebRTC packs (separate wheels)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
-dependencies = ["urisysedge>=0.1.0"]
+dependencies = [
+  "urisysedge>=0.1.0",
+  "PyYAML>=6.0",
+  "uristt>=0.1.0",
+  "uriwebrtc>=0.1.0",
+  "urimessage>=0.1.0",
+  "urichat>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "uricore>=0.1.8", "urillm>=0.1.0", "urirdpedge>=0.1.0"]
+rdp = ["urirdpedge>=0.1.0"]
 
 [tool.uv.sources]
 urisysedge = { path = "../urisysedge", editable = true }
+uricore = { path = "../uricore", editable = true }
+uristt = { path = "../uristt", editable = true }
+uriwebrtc = { path = "../uriwebrtc", editable = true }
+urimessage = { path = "../urimessage", editable = true }
+urichat = { path = "../urichat", editable = true }
+urillm = { path = "../urillm", editable = true }
+urirdpedge = { path = "../urirdpedge", editable = true }
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["labedge*", "urimessage*", "urichat*", "uristt*", "uriwebrtc*"]
+include = ["labedge*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

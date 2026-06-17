@@ -13,8 +13,8 @@
 ## Still present (shim)
 
 - `urisys-automation-lab/server/lab_uri_adapter.py` — forwards legacy `chat://` execute steps
-- `packages/python/urichat/` — phrase-map pack for STT demos
-- Markpacts: `urichat.contract.markpact.md`, references in `uristt`
+- `tellmesh/urichat/` — deprecated phrase-map pack (pip `urichat>=0.1.0`)
+- Markpacts: `urichat/markpacts/urichat.contract.markpact.md`, references in `uristt`
 
 ## Flows
 
