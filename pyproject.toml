@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 dependencies = [
-  "uricore>=0.1.8",
+  "uricontrol>=0.1.8",
   "PyYAML>=6.0",
   "uristt>=0.1.0",
   "uriwebrtc>=0.1.0",
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "uricore>=0.1.8", "urillm>=0.1.0", "urirdpedge>=0.1.0"]
+dev = ["pytest>=8.0", "uricontrol>=0.1.8", "urillm>=0.1.0", "urirdpedge>=0.1.0"]
 rdp = ["urirdpedge>=0.1.0"]
 sessions = ["uri2flow>=0.1.2"]
 
@@ -28,7 +28,7 @@ urisys-test-sessions = "urisys_lab.sessions.cli:main"
 urisys-lenovo-session = "urisys_lab.lenovo.cli:main"
 
 [tool.uv.sources]
-uricore = { path = "../uricore", editable = true }
+uricontrol = { path = "../uricontrol", editable = true }
 uristt = { path = "../uristt", editable = true }
 uriwebrtc = { path = "../uriwebrtc", editable = true }
 urimessage = { path = "../urimessage", editable = true }
