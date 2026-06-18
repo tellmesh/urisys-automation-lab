@@ -598,14 +598,14 @@ def _maybe_run_node_upgrade(
     log_path: Path,
     flow_records: list[dict[str, Any]],
     _run_one: Any,
-) -> bool:
+) -> bool | None:
     if (
         node_upgrade_ran
         or not UPGRADE_NODE_FLOW.exists()
         or not _needs_node_upgrade(flow_paths)
         or fp.name == "01-health-probe.uri.flow.yaml"
     ):
-        return node_upgrade_ran
+        return None
     node_rec = _run_upgrade_flow(
         UPGRADE_NODE_FLOW, "urisys-node wheel",
         log_path=log_path, flow_records=flow_records, _run_one=_run_one,
@@ -707,7 +707,8 @@ def _run_flows(
         )
         if nr is False:
             continue
-        node_upgrade_ran = True
+        if nr is True:
+            node_upgrade_ran = True
 
         if not _maybe_run_kvm_upgrade(
             fp, kvm_upgrade_ran=kvm_upgrade_ran,

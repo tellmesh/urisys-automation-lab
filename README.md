@@ -33,6 +33,7 @@ bash scripts/run-lab.sh
 ## Stack
 
 ```txt
+src/urisys_lab/           → test sessions, lenovo remote flows (moved from urisys)
 flows/*.uri.flow.yaml     → uri2flow
 server/                   → lab gateway :8099
 ../uristt, ../uriwebrtc, ../urimessage, ../urichat  → standalone voice packs
