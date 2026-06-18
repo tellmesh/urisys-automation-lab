@@ -1,0 +1,25 @@
+id: uristt
+version: 1
+scheme: stt
+description: Speech-to-text pack (mock MVP; browser passthrough + audio transcribe).
+uri_patterns:
+  - pattern: stt://local/session/{session}/command/start
+    kind: command
+    operation: stt.session.start
+    side_effects: true
+    approval: required
+  - pattern: stt://local/session/{session}/query/transcript
+    kind: query
+    operation: stt.session.transcript
+    side_effects: false
+    approval: not_required
+  - pattern: stt://local/audio/command/transcribe
+    kind: command
+    operation: stt.audio.transcribe
+    side_effects: true
+    approval: required
+handlers:
+  python:
+    stt.session.start: python://uristt.handlers:session_start
+    stt.session.transcript: python://uristt.handlers:session_transcript
+    stt.audio.transcribe: python://uristt.handlers:audio_transcribe

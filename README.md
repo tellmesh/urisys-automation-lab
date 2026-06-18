@@ -80,3 +80,19 @@ NL log decision (host uri3): see [`uri3/examples/nl-log-decision.uri.flow.yaml`]
 - [STT.md](docs/STT.md)
 - [WEBRTC_CHAT.md](docs/WEBRTC_CHAT.md)
 - [10_AUTOMATIONS.md](docs/10_AUTOMATIONS.md)
+
+## Ekosystem TellMesh
+
+Orchestrator: **[urisys](https://github.com/tellmesh/urisys)** · Mapa: **[MESH.md](https://github.com/tellmesh/urisys/blob/main/docs/MESH.md)** · Model: **[ECOSYSTEM.md](https://github.com/tellmesh/urisys/blob/main/../docs/ECOSYSTEM.md)**
+
+| Pole | Wartość |
+|------|---------|
+| **Warstwa** | Lab / voice gateway |
+| **Port** | 8099 |
+| **Schemes** | stt, webrtc, message |
+| **Orchestrator** | urisys |
+
+Runtime edge: **`uri_control.edge`** w pakiecie **`uricore`** (legacy `urisysedge` usunięty 2026-06).
+Router intencji: **`urirouter`** (`uri_router`) — resolve + HTTP/MQTT delegate.
+
+<!-- end-ecosystem -->
