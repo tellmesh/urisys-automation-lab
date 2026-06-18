@@ -1,39 +1,28 @@
-# uriwebrtc contract (MVP)
+# uriwebrtc contract (deprecated location)
 
-Scheme: `webrtc://`
+**Canonical pack:** [tellmesh/uriwebrtc](https://github.com/tellmesh/uriwebrtc)  
+**Markpact:** `uriwebrtc/markpacts/uriwebrtc.markpact.md`  
+**ifURI browser contract:** [if-uri/app/docs/WEBRTC.md](https://github.com/if-uri/app/blob/main/docs/WEBRTC.md)
 
-```yaml markpact:contract
-apiVersion: urisys.io/v1
-kind: UriContract
-metadata:
-  id: uriwebrtc.contract
-  version: 0.1.0
-scheme: webrtc
-commands:
-  - id: webrtc.session.start
-    pattern: webrtc://local/session/{session}/command/start
-    side_effects: true
-    requires_approval: true
-  - id: webrtc.data.send
-    pattern: webrtc://local/session/{session}/data/command/send
-    side_effects: true
-    requires_approval: true
-```
+This file is kept for historical links from `urisys-automation-lab`. Do not extend here.
 
-## Routes
+## Scheme: `webrtc://`
+
+### Routes (uriwebrtc >= 0.1.0)
 
 ```txt
 webrtc://local/session/{session}/command/start
 webrtc://local/session/{session}/data/command/send
+webrtc://local/session/{session}/signal/command/post
+webrtc://local/session/{session}/signal/query/inbox
 ```
 
-## Role
+### Role
 
-Transport only — media + DataChannel URI envelopes.
+- **Node pack** — session tracking, signal inbox mock, envelope capture (no execution).
+- **Browser P2P** — ifURI `/api/webrtc/signal` + data channel `voice` / `voice-reply` (see WEBRTC.md).
 
-Execution stays in `kvm://`, `him://`, `rdp://`, etc.
-
-## DataChannel envelope
+### DataChannel envelope (node `data/command/send`)
 
 ```json
 {
@@ -43,4 +32,9 @@ Execution stays in `kvm://`, `him://`, `rdp://`, etc.
 }
 ```
 
-Signaling (future): `signaling://local/room/{id}/…`
+### Browser voice envelope (ifURI peer)
+
+```json
+{ "kind": "voice", "id": "v…", "text": "sprawdź health", "dry_run": false }
+{ "kind": "voice-reply", "id": "v…", "ok": true, "text": "…" }
+```
