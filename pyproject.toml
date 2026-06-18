@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "urisys-automation-lab"
-version = "0.1.3"
+version = "0.1.4"
 description = "urisys automation lab — server, flows, voice/WebRTC packs (separate wheels)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 dependencies = [
-  "urisysedge>=0.1.0",
+  "uricore>=0.1.8",
   "PyYAML>=6.0",
   "uristt>=0.1.0",
   "uriwebrtc>=0.1.0",
@@ -21,9 +21,13 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "uricore>=0.1.8", "urillm>=0.1.0", "urirdpedge>=0.1.0"]
 rdp = ["urirdpedge>=0.1.0"]
+sessions = ["uri2flow>=0.1.2"]
+
+[project.scripts]
+urisys-test-sessions = "urisys_lab.sessions.cli:main"
+urisys-lenovo-session = "urisys_lab.lenovo.cli:main"
 
 [tool.uv.sources]
-urisysedge = { path = "../urisysedge", editable = true }
 uricore = { path = "../uricore", editable = true }
 uristt = { path = "../uristt", editable = true }
 uriwebrtc = { path = "../uriwebrtc", editable = true }
@@ -31,10 +35,12 @@ urimessage = { path = "../urimessage", editable = true }
 urichat = { path = "../urichat", editable = true }
 urillm = { path = "../urillm", editable = true }
 urirdpedge = { path = "../urirdpedge", editable = true }
+uri2flow = { path = "../uri2flow", editable = true }
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["labedge*"]
+where = ["src", "."]
+include = ["urisys_lab*", "labedge*"]
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 testpaths = ["tests"]

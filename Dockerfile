@@ -16,8 +16,9 @@ RUN apt-get update \
 WORKDIR /opt/lab
 
 # Build context: tellmesh workspace root
+COPY urirouter /build/urirouter
 COPY uricore /opt/lab/vendor/uricore
-COPY urisysedge /opt/lab/vendor/urisysedge
+COPY uricore /opt/lab/vendor/uricore
 COPY uristt /opt/lab/vendor/uristt
 COPY uriwebrtc /opt/lab/vendor/uriwebrtc
 COPY urimessage /opt/lab/vendor/urimessage
@@ -35,7 +36,7 @@ RUN chmod +x /usr/local/bin/lab-entrypoint \
     && mkdir -p /opt/lab/data \
     && pip install --no-cache-dir \
        -e /opt/lab/vendor/uricore \
-       -e /opt/lab/vendor/urisysedge \
+       -e /opt/lab/vendor/uricore \
        -e /opt/lab/vendor/uristt \
        -e /opt/lab/vendor/uriwebrtc \
        -e /opt/lab/vendor/urimessage \

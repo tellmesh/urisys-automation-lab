@@ -16,7 +16,7 @@ TELLMESH = LAB_ROOT.parent
 try:
     from labedge.runtime import Runtime, load_json
 except ImportError:
-    from urisysedge.runtime import Runtime, load_json  # type: ignore
+    from uri_control.edge.runtime import Runtime, load_json  # type: ignore
 
 
 def build_lab_runtime(config_path: str | None = None) -> Runtime:

@@ -8,7 +8,7 @@ from pathlib import Path
 LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(LAB / "server"))
 
-from urisysedge.runtime import Runtime
+from uri_control.edge.runtime import Runtime
 
 import urillm
 import urimessage

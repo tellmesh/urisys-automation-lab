@@ -1,7 +1,7 @@
 import urichat
 import uristt
 import uriwebrtc
-from urisysedge.runtime import Runtime
+from uri_control.edge.runtime import Runtime
 
 
 def _rt() -> Runtime:
