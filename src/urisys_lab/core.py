@@ -134,17 +134,43 @@ def write_base64_image(b64: str, dest: Path) -> int:
     return len(raw)
 
 
+def _iter_nested_dicts(obj: Any) -> Any:
+    if isinstance(obj, dict):
+        yield obj
+        for value in obj.values():
+            yield from _iter_nested_dicts(value)
+    elif isinstance(obj, list):
+        for item in obj:
+            yield from _iter_nested_dicts(item)
+
+
+def _is_image_payload(obj: dict[str, Any]) -> bool:
+    b64 = obj.get("base64")
+    if not isinstance(b64, str) or len(b64) <= 100:
+        return False
+    mime = str(obj.get("mime") or "image/png").lower()
+    return not mime.startswith("text/")
+
+
 def extract_images_from_dict(
     obj: dict[str, Any],
     *,
     session_dir: Path,
     filename: str,
     strip_base64: bool,
+    seen_b64: set[str] | None = None,
 ) -> list[str]:
     """Extract a base64 image (and nested shots[]) from a dict into screenshots/."""
     saved: list[str] = []
-    b64 = obj.get("base64")
-    if isinstance(b64, str) and len(b64) > 100:
+    seen = seen_b64 if seen_b64 is not None else set()
+    if _is_image_payload(obj):
+        b64 = str(obj["base64"])
+        key = b64
+        if key in seen:
+            if strip_base64:
+                obj.pop("base64", None)
+            return saved
+        seen.add(key)
         rel = f"screenshots/{filename}.{image_ext(str(obj.get('mime') or ''))}"
         size = write_base64_image(b64, session_dir / rel)
         saved.append(rel)
@@ -163,6 +189,7 @@ def extract_images_from_dict(
                         session_dir=session_dir,
                         filename=f"{filename}_shot{i}",
                         strip_base64=strip_base64,
+                        seen_b64=seen,
                     )
                 )
     return saved
@@ -179,16 +206,24 @@ def extract_step_screenshots(
     resp = step.get("response")
     if not isinstance(resp, dict):
         return []
-    result = resp.get("result")
-    if not isinstance(result, dict):
-        return []
     step_id = str(step.get("id") or "step")
-    saved = extract_images_from_dict(
-        result,
-        session_dir=session_dir,
-        filename=f"{flow_id}__{step_id}",
-        strip_base64=strip_base64,
-    )
+    seen: set[str] = set()
+    saved: list[str] = []
+    image_idx = 0
+    for nested in _iter_nested_dicts(resp):
+        if not _is_image_payload(nested):
+            continue
+        suffix = "" if image_idx == 0 else f"_{image_idx}"
+        saved.extend(
+            extract_images_from_dict(
+                nested,
+                session_dir=session_dir,
+                filename=f"{flow_id}__{step_id}{suffix}",
+                strip_base64=strip_base64,
+                seen_b64=seen,
+            )
+        )
+        image_idx += 1
     if saved:
         step["screenshots"] = saved
     return saved
