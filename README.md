@@ -36,7 +36,7 @@ bash scripts/run-lab.sh
 src/urisys_lab/           → test sessions, lenovo remote flows (moved from urisys)
 flows/*.uri.flow.yaml     → uri2flow
 server/                   → lab gateway :8099
-../uristt, ../uriwebrtc, ../urimessage, ../urichat  → standalone voice packs
+../uristt, ../uriwebrtc, ../urimessage  → standalone voice packs
 ../urirdpedge/            → RDP/KVM stack CLI (optional `[rdp]` extra / dev)
 web/                      → getUserMedia + Web Speech + WebRTC DataChannel
 urirdp-docker :8795       → rdp/kvm/him/ocr/llm execution (Docker)

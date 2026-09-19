@@ -25,10 +25,8 @@ def build_lab_runtime(config_path: str | None = None) -> Runtime:
         str(TELLMESH / "urirdp-docker" / "config" / "rdp-kvm-profile.json"),
     )
     config = load_json(config_file) if Path(config_file).exists() else {}
-    config.setdefault("chat", {})
-    config["chat"]["urisys_base_url"] = os.environ.get("URISYS_RDP_URL", "http://127.0.0.1:8795")
 
-    packs = os.environ.get("URISYS_LAB_PACKS", "rdp,kvm,him,ocr,llm,stt,chat,message,webrtc").split(",")
+    packs = os.environ.get("URISYS_LAB_PACKS", "rdp,kvm,him,ocr,llm,stt,message,webrtc").split(",")
     packs = [p.strip() for p in packs if p.strip()]
 
     rdp_pack_names = {"rdp", "kvm", "him", "ocr", "llm", "shell", "env", "browser"}
@@ -51,10 +49,6 @@ def build_lab_runtime(config_path: str | None = None) -> Runtime:
         import uristt
 
         uristt.register(rt)
-    if "chat" in packs:
-        import urichat
-
-        urichat.register(rt)
     if "message" in packs:
         import urimessage
 

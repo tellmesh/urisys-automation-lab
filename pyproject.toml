@@ -15,7 +15,6 @@ dependencies = [
   "uristt>=0.1.0",
   "uriwebrtc>=0.1.0",
   "urimessage>=0.1.0",
-  "urichat>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -32,7 +31,6 @@ uricontrol = { path = "../uricontrol", editable = true }
 uristt = { path = "../uristt", editable = true }
 uriwebrtc = { path = "../uriwebrtc", editable = true }
 urimessage = { path = "../urimessage", editable = true }
-urichat = { path = "../urichat", editable = true }
 urillm = { path = "../urillm", editable = true }
 urirdpedge = { path = "../urirdpedge", editable = true }
 uri2flow = { path = "../uri2flow", editable = true }

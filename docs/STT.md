@@ -3,7 +3,7 @@
 ## Demo (browser)
 
 ```txt
-getUserMedia → Web Speech API → transcript → chat://local/uri/command/execute
+getUserMedia → Web Speech API → transcript → llm://local/text/query/plan → target URI
 ```
 
 ## Stable local

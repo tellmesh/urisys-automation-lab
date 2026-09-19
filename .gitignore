@@ -232,3 +232,5 @@ __marimo__/
 
 # Markpact unpack output (urisys markpact run/materialize)
 .markpact/
+
+/.worktrees/
