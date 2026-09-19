@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     URISYS_LAB_HOST=0.0.0.0 \
     URISYS_LAB_PORT=8099 \
-    URISYS_LAB_PACKS=stt,chat,message,webrtc \
+    URISYS_LAB_PACKS=stt,message,webrtc \
     URISYS_LAB_FORWARD_SCHEMES=rdp,kvm,him,ocr,llm,browser,shell,http,https,env,log \
     URISYS_RDP_URL=http://urirdp:8795
 
@@ -22,7 +22,6 @@ COPY uricore /opt/lab/vendor/uricore
 COPY uristt /opt/lab/vendor/uristt
 COPY uriwebrtc /opt/lab/vendor/uriwebrtc
 COPY urimessage /opt/lab/vendor/urimessage
-COPY urichat /opt/lab/vendor/urichat
 COPY urisys-automation-lab /opt/lab/vendor/urisys-automation-lab
 COPY urisys-automation-lab/server ./server
 COPY urisys-automation-lab/web ./web
@@ -40,7 +39,6 @@ RUN chmod +x /usr/local/bin/lab-entrypoint \
        -e /opt/lab/vendor/uristt \
        -e /opt/lab/vendor/uriwebrtc \
        -e /opt/lab/vendor/urimessage \
-       -e /opt/lab/vendor/urichat \
        -e /opt/lab/vendor/urisys-automation-lab \
        /tmp/uri2ops /tmp/uri3 /tmp/uri2flow \
     && rm -rf /tmp/uri2ops /tmp/uri3 /tmp/uri2flow

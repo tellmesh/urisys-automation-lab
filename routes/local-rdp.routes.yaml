@@ -5,7 +5,6 @@ forward:
 
 local_schemes:
   - stt
-  - chat
   - message
   - webrtc
   - log
@@ -27,6 +26,6 @@ examples:
   - rdp://local/display/query/status
   - him://local/keyboard/command/type-text
   - stt://local/session/main/query/transcript
-  - chat://local/uri/command/execute
+  - llm://local/text/query/plan
   - message://local/alert/command/send
   - webrtc://local/session/rdp-chat/data/command/send

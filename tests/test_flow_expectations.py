@@ -18,7 +18,7 @@ ROOT = LAB.parent
 SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
-import run_test_sessions as R  # noqa: E402
+from urisys_lab.sessions import expectations as R  # noqa: E402
 import session_report as SR  # noqa: E402
 
 FLOWS_DIR = LAB / "flows"
@@ -41,7 +41,7 @@ def test_flow_files_exist():
 @pytest.mark.parametrize("flow_path", FLOW_FILES, ids=lambda p: p.stem)
 def test_expect_block_is_well_formed(flow_path: Path):
     """An `expect:` block, if present, must only use known keys with valid types."""
-    expect = R._flow_expectations(flow_path)
+    expect = R.flow_expectations(flow_path)
     assert isinstance(expect, dict)
     unknown = set(expect) - KNOWN_EXPECT_KEYS
     assert not unknown, f"{flow_path.name}: unknown expect keys {unknown}"

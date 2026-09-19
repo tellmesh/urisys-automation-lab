@@ -397,19 +397,24 @@ def session_automation_lab(session_dir: Path, *, use_existing: bool = False) -> 
         stt = _call_and_record(session_dir, steps, 3, "stt", "stt://local/session/main/query/transcript", {"text": "kliknij OK"}, {"approved": True}, port=lab_port, step_name="stt-mock")
         steps[-1]["uri"] = stt.get("uri")
 
-        chat_dry = _call_and_record(session_dir, steps, 4, "chat-dry-run", "chat://local/uri/command/execute", {"transcript": "kliknij OK", "dry_run": True, "approved": True}, {"approved": True, "dry_run": True}, port=lab_port)
+        planned = _call_and_record(session_dir, steps, 4, "voice-plan", "llm://local/text/query/plan", {"transcript": "kliknij OK"}, {"approved": True, "dry_run": True}, port=lab_port)
+        plan = planned.get("result") or {}
+        if not planned.get("ok") or not plan.get("ok") or not plan.get("uri"):
+            raise RuntimeError("Voice planning failed; target was not executed")
+        target_uri, target_payload = plan["uri"], plan.get("payload") or {}
+        _call_and_record(session_dir, steps, 5, "voice-dry-run", target_uri, target_payload, {"approved": True, "dry_run": True}, port=lab_port)
 
         _bootstrap_rdp("urisys-lab-urirdp", log, steps)
 
-        chat_real = _call_and_record(session_dir, steps, 5, "chat-real", "chat://local/uri/command/execute", {"transcript": "kliknij OK", "approved": True}, {"approved": True, "allow_real": True}, timeout=180.0, port=lab_port, step_name="chat-real-forward")
-        copy_container_file("urisys-lab-urirdp", "/opt/urirdp/data/screenshots/latest.png", session_dir / "screenshots" / "05-lab-real-click.png")
-        inner = ((chat_real.get("result") or {}).get("result") or {}).get("result") or {}
+        executed = _call_and_record(session_dir, steps, 6, "voice-real", target_uri, target_payload, {"approved": True, "dry_run": False, "allow_real": True}, timeout=180.0, port=lab_port, step_name="voice-real-forward")
+        copy_container_file("urisys-lab-urirdp", "/opt/urirdp/data/screenshots/latest.png", session_dir / "screenshots" / "06-lab-real-click.png")
+        inner = executed.get("result") or {}
         clicked = inner.get("clicked")
         steps[-1].update({
-            "status": "pass" if chat_real.get("ok") and clicked else "fail",
-            "uri": "chat://local/uri/command/execute",
+            "status": "pass" if executed.get("ok") and clicked else "fail",
+            "uri": target_uri,
             "metrics": {"clicked": clicked},
-            "screenshot": "screenshots/05-lab-real-click.png" if clicked else None,
+            "screenshot": "screenshots/06-lab-real-click.png" if clicked else None,
         })
 
         if any(s["status"] == "fail" for s in steps):

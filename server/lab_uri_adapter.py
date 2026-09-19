@@ -26,7 +26,6 @@ LAB_SCHEMES = frozenset(
         "rdp",
         "env",
         "stt",
-        "chat",
         "message",
         "webrtc",
         "http",
@@ -69,11 +68,6 @@ class LabCallAdapter:
         resolved_uri = str(payload.pop("_resolved_uri", "") or uri)
         step_ctx = dict(base_ctx)
 
-        if resolved_uri.startswith("chat://") and "execute" in resolved_uri:
-            payload.setdefault("approved", True)
-            payload["dry_run"] = False
-            step_ctx["dry_run"] = False
-            step_ctx["allow_real"] = True
 
         if resolved_uri.startswith("message://"):
             payload.setdefault("approved", True)

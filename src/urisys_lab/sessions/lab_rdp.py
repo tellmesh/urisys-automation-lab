@@ -38,14 +38,14 @@ def flow_step_context(
     if real_mode:
         ctx["allow_real"] = scheme not in {"webrtc", "stt"}
         ctx["dry_run"] = scheme in {"webrtc", "stt"}
-        if scheme in {"kvm", "rdp", "him", "ocr", "llm", "shell", "chat", "browser", "env", "stt", "webrtc"}:
+        if scheme in {"kvm", "rdp", "him", "ocr", "llm", "shell", "browser", "env", "stt", "webrtc"}:
             ctx["allow_real"] = True
             ctx["dry_run"] = False
         return ctx
     if scheme in {"kvm", "rdp", "him", "ocr", "llm"}:
         ctx["allow_real"] = True
         ctx["dry_run"] = False
-    elif scheme in {"stt", "chat", "webrtc"}:
+    elif scheme in {"stt", "webrtc"}:
         ctx["dry_run"] = bool(defaults.get("dry_run", True))
         ctx["allow_real"] = False
     else:
@@ -57,7 +57,7 @@ def step_pause(uri: str, *, real_mode: bool) -> None:
     if not real_mode:
         return
     scheme = uri.split("://", 1)[0] if "://" in uri else ""
-    if scheme in {"him", "kvm", "shell", "chat", "browser"}:
+    if scheme in {"him", "kvm", "shell", "browser"}:
         time.sleep(3.0)
     elif scheme in {"rdp"}:
         time.sleep(1.0)

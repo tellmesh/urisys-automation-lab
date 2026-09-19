@@ -14,7 +14,7 @@ curl -fsS -X POST "http://127.0.0.1:${LAB_PORT}/uri/call" \
 
 curl -fsS -X POST "http://127.0.0.1:${LAB_PORT}/uri/call" \
   -H 'Content-Type: application/json' \
-  -d '{"uri":"chat://local/uri/command/execute","payload":{"transcript":"kliknij OK","dry_run":true,"approved":true},"context":{"approved":true,"dry_run":true}}' \
+  -d '{"uri":"llm://local/text/query/plan","payload":{"transcript":"kliknij OK"},"context":{"approved":true,"dry_run":true}}' \
   | python3 -m json.tool
 
 echo "PASS docker smoke"

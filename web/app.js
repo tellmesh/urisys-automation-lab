@@ -103,11 +103,17 @@ document.getElementById("btnCall").onclick = async () => {
 
 document.getElementById("btnChatExecute").onclick = async () => {
   const text = transcriptEl.value.trim() || "kliknij OK";
-  await uriCall("chat://local/uri/command/execute", {
-    transcript: text,
+  const context = {
     approved: document.getElementById("approved").checked,
     dry_run: document.getElementById("dryRun").checked,
-  });
+  };
+  const response = await uriCall("llm://local/text/query/plan", { transcript: text }, context);
+  const plan = response.result;
+  if (!response.ok || !plan || !plan.ok || !plan.uri) {
+    log("Planning failed", response);
+    return;
+  }
+  await uriCall(plan.uri, plan.payload || {}, context);
 };
 
 document.getElementById("btnSendEnvelope").onclick = async () => {

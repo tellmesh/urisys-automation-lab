@@ -15,16 +15,16 @@ import urimessage
 import uristt
 
 
-def _rt() -> Runtime:
-    rt = Runtime(config={"chat": {"urisys_base_url": "http://127.0.0.1:8795"}})
+def _rt(tmp_path) -> Runtime:
+    rt = Runtime(events_path=str(tmp_path / "events.jsonl"))
     uristt.register(rt)
     urimessage.register(rt)
     urillm.register(rt)
     return rt
 
 
-def test_message_alert_send():
-    rt = _rt()
+def test_message_alert_send(tmp_path):
+    rt = _rt(tmp_path)
     res = rt.call(
         "message://local/alert/command/send",
         {"text": "critical error in logs", "severity": "critical", "approved": True},
@@ -35,8 +35,8 @@ def test_message_alert_send():
     assert res["result"]["severity"] == "critical"
 
 
-def test_llm_plan_from_transcript():
-    rt = _rt()
+def test_llm_plan_from_transcript(tmp_path):
+    rt = _rt(tmp_path)
     res = rt.call(
         "llm://local/text/query/plan",
         {"transcript": "kliknij OK", "allowed_schemes": ["kvm"]},

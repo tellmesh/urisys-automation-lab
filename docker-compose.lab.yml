@@ -46,7 +46,7 @@ services:
       URISYS_RDP_URL: http://urirdp:8795
       URISYS_LAB_HOST: 0.0.0.0
       URISYS_LAB_PORT: ${URISYS_LAB_PORT:-8099}
-      URISYS_LAB_PACKS: stt,chat,webrtc
+      URISYS_LAB_PACKS: stt,webrtc
       URISYS_LAB_FORWARD_SCHEMES: rdp,kvm,him,ocr,llm,browser,shell,http,https,env
     ports:
       - "${URISYS_LAB_PORT:-8099}:8099"

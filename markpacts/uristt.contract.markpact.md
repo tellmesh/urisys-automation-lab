@@ -46,5 +46,5 @@ stt://local/audio/command/transcribe
 getUserMedia / MediaRecorder
   → stt://local/audio/command/transcribe
   → transcript
-  → chat://local/uri/command/execute
+  → llm://local/text/query/plan → target URI
 ```

@@ -1,19 +1,19 @@
-import urichat
+import urillm
 import uristt
 import uriwebrtc
 from uri_control.edge.runtime import Runtime
 
 
-def _rt() -> Runtime:
-    rt = Runtime(config={"chat": {"urisys_base_url": "http://127.0.0.1:8795"}})
+def _rt(tmp_path) -> Runtime:
+    rt = Runtime(events_path=str(tmp_path / "events.jsonl"))
     uristt.register(rt)
-    urichat.register(rt)
+    urillm.register(rt)
     uriwebrtc.register(rt)
     return rt
 
 
-def test_stt_session_and_transcript():
-    rt = _rt()
+def test_stt_session_and_transcript(tmp_path):
+    rt = _rt(tmp_path)
     start = rt.call(
         "stt://local/session/main/command/start",
         {"language": "pl-PL", "mode": "browser"},
@@ -25,20 +25,20 @@ def test_stt_session_and_transcript():
     assert "OK" in tx["result"]["transcript"].upper()
 
 
-def test_chat_uri_execute_dry_run():
-    rt = _rt()
+def test_voice_plan_dry_run(tmp_path):
+    rt = _rt(tmp_path)
     res = rt.call(
-        "chat://local/uri/command/execute",
+        "llm://local/text/query/plan",
         {"transcript": "kliknij OK", "dry_run": True, "approved": True},
         {"approved": True, "dry_run": True},
     )
     assert res["ok"]
-    assert res["result"]["mode"] == "dry_run"
+    assert res["result"]["ok"]
     assert "kvm://" in res["result"]["uri"]
 
 
-def test_webrtc_data_send():
-    rt = _rt()
+def test_webrtc_data_send(tmp_path):
+    rt = _rt(tmp_path)
     start = rt.call("webrtc://local/session/rdp-chat/command/start", {"room": "rdp-lab"}, {"approved": True})
     assert start["ok"]
     sent = rt.call(
@@ -50,8 +50,8 @@ def test_webrtc_data_send():
     assert sent["result"]["envelope"]["uri"].startswith("rdp://")
 
 
-def test_webrtc_signal_relay():
-    rt = _rt()
+def test_webrtc_signal_relay(tmp_path):
+    rt = _rt(tmp_path)
     posted = rt.call(
         "webrtc://local/session/room-a/signal/command/post",
         {"room": "room-a", "from": "http://a", "type": "offer", "data": {"type": "offer", "sdp": "v=0"}},

@@ -34,7 +34,7 @@ Services:
 - **uri2flow** — compile only
 - **webrtc://** — media + data transport
 - **stt://** — speech → text
-- **chat://** — text → URI mapping / forward
+- **llm://** — text → URI plan; target URI executes through the existing gateway
 - **kvm/him/ocr/llm/rdp** — execution
 
 ## Related

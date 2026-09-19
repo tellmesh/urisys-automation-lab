@@ -61,3 +61,20 @@ def test_backfill_from_responses_dir(tmp_path: Path):
     )
     saved = backfill_session_images(tmp_path)
     assert saved == ["screenshots/flow__frame.png"]
+
+
+def test_distinct_images_with_same_prefix_are_retained(tmp_path: Path):
+    # Images can share their header and first pixels but differ farther on.
+    second = base64.b64encode(base64.b64decode(_PNG) + b"different tail").decode("ascii")
+    assert second[:96] == _PNG[:96]
+    step = {"id": "frames", "response": {"result": [
+        {"mime": "image/png", "base64": _PNG},
+        {"mime": "image/png", "base64": second},
+        {"mime": "image/png", "base64": _PNG},
+    ]}}
+    saved = extract_step_screenshots(step, session_dir=tmp_path, flow_id="voice")
+    assert len(saved) == 2
+    assert [(tmp_path / name).read_bytes() for name in saved] == [
+        base64.b64decode(_PNG), base64.b64decode(second),
+    ]
+    assert "base64" not in json.dumps(step)

@@ -139,11 +139,6 @@ def run_flow_file(
             node = workflow.nodes[node_id]
             payload = dict(node.payload or {})
             step_ctx = dict(ctx)
-            if str(node.uri).startswith("chat://") and "execute" in str(node.uri):
-                payload.setdefault("approved", True)
-                payload["dry_run"] = False
-                step_ctx["dry_run"] = False
-                step_ctx["allow_real"] = True
 
             step, should_continue = run_workflow_node(
                 node,
